@@ -66,6 +66,12 @@ def re_info_finder(document: str):
     for match in matches:
         dt = match[ 0 ].strip()
         dd = match[ 1 ].strip()
+        # print(f'"{dt}"')
+        # print(f'"{dd}"')
+        # print(heading)
+        # print()
+        # input()
+
         if dt == "MeSH Heading":
             heading = dd
         elif dt == "Tree Number(s)":
@@ -80,16 +86,16 @@ def re_info_finder(document: str):
                 rdf_id = rdf_matches[ 0 ]
             else:
                 rdf_id = '-'
-        elif dt == 'MeSH Supplementary' and not heading:
+        elif dt == 'MeSH Supplementary' and heading == '-':
             heading = dd
             supplementary_concept = 'True'
 
-    # print(f"MeSH Heading: {heading}")
-    # print(f"Tree Number(s): {tree_num}")
-    # print(f"Unique ID: {unique_id}")
-    # print(f"RDF Unique Identifier: {rdf_id}")
-    # print(f'supplementary_concept: {supplementary_concept}')
-    # input()
+        # print(f"MeSH Heading: {heading}")
+        # print(f"Tree Number(s): {tree_num}")
+        # print(f"Unique ID: {unique_id}")
+        # print(f"RDF Unique Identifier: {rdf_id}")
+        # print(f'supplementary_concept: {supplementary_concept}')
+        # input()
     return heading, tree_num, unique_id, rdf_id, supplementary_concept
 
 
@@ -108,7 +114,7 @@ def mesh_info_bulk_download(mesh_id_set: set, mesh_id_save_file: str,
                             tree_save_file: str, fail_mesh_id_save_file: str):
     fail_mesh_id_set = set()
     wf_id = open(mesh_id_save_file, 'w')
-    wf_id.write('ID\theadin\tTreeNum\tRDF-ID\tSupplementaryConcept\n')
+    wf_id.write('ID\theading\tTreeNum\tRDF-ID\tSupplementaryConcept\n')
     wf_tree = open(tree_save_file, 'w')
     wf_tree.write(f'MeshID\tAncestorID\tMeSHName\n')
     for idx, mesh_id in enumerate(mesh_id_set):
@@ -123,7 +129,7 @@ def mesh_info_bulk_download(mesh_id_set: set, mesh_id_save_file: str,
         if response.status_code == 200:
             document = response.text
             heading, tree_num, unique_id, rdf_id, supplementary_concept = re_info_finder(document)
-            wf_id.write(f'{unique_id}\t{heading}\t{tree_num}\t{rdf_id}\t{supplementary_concept}')
+            wf_id.write(f'{unique_id}\t{heading}\t{tree_num}\t{rdf_id}\t{supplementary_concept}\n')
             wf_id.flush()
             ancestor_tree_id = '.'.join(tree_num.split('.')[ :3 ])
             # print(f'ancestor_tree_id: {ancestor_tree_id}')
