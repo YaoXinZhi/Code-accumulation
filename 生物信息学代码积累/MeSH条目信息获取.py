@@ -109,7 +109,6 @@ def mesh_info_bulk_download(mesh_id_set: set, mesh_id_save_file: str,
         if idx % 20 == 0 and idx != 0:
             print(f'{idx:,}/{len(mesh_id_set):,} processed.')
             print(f'{len(fail_mesh_id_set):,}/{idx:,} failed.')
-            time.sleep(5)
 
         url = f'https://meshb-prev.nlm.nih.gov/record/ui?ui={mesh_id}'
         response = requests.get(url)
